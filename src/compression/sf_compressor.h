@@ -1,10 +1,8 @@
 #include "src/includes/types.h"
 #include "src/writing/write_out.h"
 #include "src/debug/debug.h"
+#include "src/utils/sorter.h"
 #include <math.h>
 
-typedef unsigned long long ULL;
 
-
-void sortByProbability(char * symbols , float * probability , int number_s);
 int compressFile(CompressInfo * file_info);

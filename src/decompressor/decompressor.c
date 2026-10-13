@@ -61,11 +61,11 @@ static int readFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     }
     if(parsing_error) return (INVALID_HEADER_FORMAT);
 
-
+    //Still needs to implement Shannon-Fanno reverse algorithm
 }
 
 /*Decompresses the file back to normal given the information after the execution of Shannon-Fano's algorithm*/
-static void decompress(FILE* ext_file ,CompressInfo* f_info){
+static void decompressSF(FILE* ext_file ,CompressInfo* f_info){
 
 }
 

@@ -59,7 +59,7 @@ static int max_entropy(float * prob , int ns){
 and also the necessary information for decompression.
     Returns 1 if sucess , e.g. the file is compressable , and 0 if not.*/
 int compressFile(CompressInfo * file_info){
-    sortByProbability(file_info->symbols,file_info->probabilities,file_info->n_symbols);
+    DecrescentSortByP(file_info->symbols,file_info->probabilities,file_info->n_symbols);
 
     //Just for debugging
     if(IS_DEBUGGING_PARSED_S) debug_parsed_symbols(file_info);
