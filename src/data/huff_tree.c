@@ -4,7 +4,7 @@
 
 /*  Removes the leaves[0] and leaves[1] from the array , substituing by the father node , and then sorting the entire array so we are left with
 an array that has each element sorted by its frequency , crescently*/
-void SortLeafNodes(Node * leaves[] , int nleaves , Node * father , Node ** left , Node ** right){
+static void SortLeafNodes(Node * leaves[] , int nleaves , Node * father , Node ** left , Node ** right){
     leaves[0] = father;
     for(int i=1;i<nleaves-1;i++) leaves[i] = leaves[i+1]; //These 2 lines substitutes indexes 0 and 1 for the father
 
@@ -69,7 +69,7 @@ Node * build_tree(float * probabilities , int limArr , int totalsymb){
 
         left_node = father;
         //It assumes the currently left_node and right_node are the indexes 0 and 1 of leaf_nodes , as it is always sorted
-        SortLeafNodes(leaf_nodes,father,limArr,&left_node,&right_node); //It assumes the currently left_node and right_node
+        SortLeafNodes(leaf_nodes,limArr,father,&left_node,&right_node); //It assumes the currently left_node and right_node
 
         limArr--;
     }
@@ -77,16 +77,18 @@ Node * build_tree(float * probabilities , int limArr , int totalsymb){
 }
 
 
-/*Deconstructs the huffman tree and when it reaches the leaf nodes , gives each symbol its new format*/
-void deconstruct_tree(ULL * new_symb , ULL path , Node * root){
+/*Deconstructs the huffman tree and when it reaches the leaf nodes , gives each symbol its new format.*/
+void deconstruct_tree(NewSymbols * new_symb , ULL path , int depth , Node * root){
     if(root!= NULL){
-        if(root->left == NULL && root->right == NULL)
-            new_symb[root->indx] = path;
+        if(root->left == NULL && root->right == NULL){
+            new_symb[root->indx].new_code = path;
+            new_symb[root->indx].length = depth;
+        }
         else{
             ULL left_path = (path<<1) | 0 , 
                 right_path = (path<<1) | 1;
-            deconstruct_tree(new_symb,left_path,root->left);
-            deconstruct_tree(new_symb,right_path,root->right);
+            deconstruct_tree(new_symb,left_path,depth+1,root->left);
+            deconstruct_tree(new_symb,right_path,depth+1,root->right);
         }
     }
 }
