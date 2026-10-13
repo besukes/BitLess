@@ -27,13 +27,14 @@ static int dc_error_handler(int flags){
                 "or includes one in an invalid format\n");
         return NO_HEADER;
     }
+    return 0;
 }
 
 /*Reads the frequency table of a compressed file header and stores the information directly onto f_info*/
 static void parseFrequencyTable(char * line , CompressInfo* f_info , int parser[MAX_SYMBOLS]){
     int i=0;
-    while(line!='\0'){
-        char symb = line[i];
+    while(*line!='\0'){
+        unsigned char symb = (unsigned char)line[i];
         while(line[i] != '\0' && line[i] > '9' && line[i] < '0') i++;
         while(line[i] != '\0' && line[i] != ' ') parser[symb] = (parser[symb]*10) + (int)line[i++];
 
@@ -84,6 +85,6 @@ int decompress_handler(char * path){
     if(!is_compressed_file) return (dc_error_handler(NO_HEADER));
     
     compressed_file = fopen(path,"r");
-    decompress(compressed_file,&f_info);
+    decompressSF(compressed_file,&f_info);
     return 0;
 }

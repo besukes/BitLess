@@ -5,7 +5,7 @@ details about the compresssion so it can be decompressed after when , and if , n
 
 
 /* Recursively applies Shannon-Fano's compression algorithm to turn the symbol into a sequence of bits*/
-static int sfcompress(float * prob , ULL * new_symb , int * bit_depth, int ns , float set_half_prob){
+static int sfcompress(float * prob , NewSymbols * new_symb, int ns , float set_half_prob){
     //We reached the final depth of Shannon-Fano's Algorithm
     if(ns <= 1) return 1;
 
@@ -26,16 +26,16 @@ static int sfcompress(float * prob , ULL * new_symb , int * bit_depth, int ns , 
     float right_node_prob = 2*set_half_prob - acc_prob;
 
     for(int j=0 ; j < n_left_tree ; j++){
-        new_symb[j] = (new_symb[j] << 1);
-        bit_depth[j]++;
+        new_symb[j].new_code = (new_symb[j].new_code << 1);
+        new_symb[j].length++;
     }
     for(int u = n_left_tree ; u < ns ; u++){
-        new_symb[u] = (new_symb[u] << 1) | 1ULL;
-        bit_depth[u]++;
+        new_symb[u].new_code = (new_symb[u].new_code << 1) | 1ULL;
+        new_symb[u].length++;
     }
 
-    sfcompress(prob,new_symb,bit_depth,n_left_tree,acc_prob/2);
-    sfcompress(prob+n_left_tree,new_symb+n_left_tree,bit_depth+n_left_tree,ns-n_left_tree,right_node_prob/2);
+    sfcompress(prob,new_symb,n_left_tree,acc_prob/2);
+    sfcompress(prob+n_left_tree,new_symb+n_left_tree,ns-n_left_tree,right_node_prob/2);
 
     return 0;
 }
@@ -66,7 +66,7 @@ int compressFile(CompressInfo * file_info){
     if(IS_DEBUGGING_PARSED_P) debug_parsed_probabilities(file_info);
 
     if(max_entropy(file_info->probabilities,file_info->n_symbols)) return 0;
-    sfcompress(file_info->probabilities,file_info->new_symbols,file_info->code_len,file_info->n_symbols,0.5f);
+    sfcompress(file_info->probabilities,file_info->newcode_arr,file_info->n_symbols,0.5f);
 
     //Just for debugging
     if(IS_DEBUGGING_NS) debug_NS_value(file_info);

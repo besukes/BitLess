@@ -35,8 +35,7 @@ static void info_parser(int symbols[MAX_SYMBOLS], CompressInfo * file_info){
     file_info->n_symbols = number_symbols;
     file_info->symbols = malloc(sizeof(char)*number_symbols);
     file_info->probabilities = malloc(sizeof(float)*number_symbols);
-    file_info->new_symbols = calloc(number_symbols,sizeof(unsigned long long)*number_symbols);
-    file_info->code_len = calloc(number_symbols,sizeof(int)*number_symbols);
+    file_info->newcode_arr = calloc(number_symbols,sizeof(NewSymbols)*number_symbols);
     
     assertSymbols(file_symbols,number_symbols,file_info->symbols);
     assertProbabilities(freq_symbols,number_symbols,file_info->total_symbols,file_info->probabilities);
@@ -50,7 +49,8 @@ static void info_parser(int symbols[MAX_SYMBOLS], CompressInfo * file_info){
  for each time an symbol is seen.*/
 static void lineParser(char line[LINE_MAX] , int symbols[MAX_SYMBOLS] , int * total_symbols){
     for(int i=0;line[i] != '\0'; i++){
-        symbols[line[i]]++;
+        unsigned char symb = (unsigned char)line[i];
+        symbols[symb]++;
         (*total_symbols)++;
     }
 }

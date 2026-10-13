@@ -5,7 +5,7 @@
 /*Debugs NEWSYMBOLS values calculated by sfcompressor*/
 void debug_NS_value(CompressInfo* file_info){
     for(int i=0;i<file_info->n_symbols;i++){
-        printf("[DEBUG NEWSYMBOL] new_symbol[%d] is %llu\n",i,file_info->new_symbols[i]);
+        printf("[DEBUG NEWSYMBOL] new_symbol[%d] is %llu\n",i,file_info->newcode_arr[i].new_code);
     }
 }
 

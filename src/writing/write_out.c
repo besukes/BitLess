@@ -58,9 +58,9 @@ static void writeCompressedFileLine(char * line , CompressInfo * file_info , FIL
         for(;j<file_info->n_symbols && line[i] != file_info->symbols[j];j++);
         if(j == file_info->n_symbols) printf("[ERROR] Error while finding symbol\n");
 
-        unsigned long long temp = file_info->new_symbols[j];
+        unsigned long long temp = file_info->newcode_arr[j].new_code;
         if(temp == 0) file_info->number_zeros++; //Needs to be better handled
-        write_out_compressed(bw,temp,file_info->code_len[j]);
+        write_out_compressed(bw,temp,file_info->newcode_arr[j].length);
         i++;
     }
 }

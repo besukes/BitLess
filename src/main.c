@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "includes/main.h"
+#include "src/includes/main.h"
 
 #define INVALID_PATH 1
 #define NO_PATH 2
