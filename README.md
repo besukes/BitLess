@@ -46,7 +46,7 @@ Podendo também depois , na execução , tal como no compressor , de modo análo
 
 O utilizador pode também usar os comandos:
 
-Para apagar a pasta build e o executável ***compressor***.
+Para apagar a pasta ***build*** e o executável ***compressor***.
 
 ```
     make clean
@@ -58,7 +58,7 @@ Para apagar os ficheiros ***(%_zip.txt)*** da pasta tests.
     make rmt
 ```
 
-Para apagar a pasta dcbuild e o executável ***decompressor***
+Para apagar a pasta ***dcbuild*** e o executável ***decompressor***
 
 ```
     make rmd
