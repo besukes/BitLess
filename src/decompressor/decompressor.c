@@ -66,7 +66,7 @@ static int readFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
 }
 
 /*Decompresses the file back to normal given the information after the execution of Shannon-Fano's algorithm*/
-static void decompressSF(FILE* ext_file ,CompressInfo* f_info){
+static void decompress(FILE* ext_file ,CompressInfo* f_info){
 
 }
 
@@ -85,6 +85,6 @@ int decompress_handler(char * path){
     if(!is_compressed_file) return (dc_error_handler(NO_HEADER));
     
     compressed_file = fopen(path,"r");
-    decompressSF(compressed_file,&f_info);
+    decompress(compressed_file,&f_info);
     return 0;
 }
