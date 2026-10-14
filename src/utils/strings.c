@@ -8,18 +8,18 @@ int strlent(char * str){
     return i;
 }
 
-/*Appends zip right before the format specification for the file (before the .)*/
-void append_zip(char *orig,char* dest){
+/*Appends a string right before the format specification for the file (before the .)*/
+void append_beforedot(char *orig,char* dest, char * append){
     if(orig == NULL) return;
     int i=0 , j = 0;
 
     for(;orig[i]!='.' && orig[i]!='\0';i++) dest[i] = orig[i];
-    dest[i] = '_';
-    dest[i+1] = 'z';
-    dest[i+2] = 'i';
-    dest[i+3] = 'p';
 
-    for(j=i+4;orig[i]!='\0';j++,i++) dest[j] = orig[i];
+    int u;
+    for(u=0;append[u]!='\0';u++)
+        dest[i+u] = append[u];
+
+    for(j=i+u;orig[i]!='\0';j++,i++) dest[j] = orig[i];
     dest[j] = '\0';
 }
 
