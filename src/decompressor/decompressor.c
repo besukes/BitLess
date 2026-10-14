@@ -3,7 +3,7 @@ it may (and most likely WILL) NOT WORK on a file compressed using other construc
     This module expects the file to have a header in the following format :
         ------------------------------
             LAST RELEVANT BITS (1 BYTE)
-            FREQUENCY TABLE
+            Canonic TABLE
             end
         ------------------------------
     If the file does not contain this format , it will throw an error and will not execute.
@@ -40,10 +40,8 @@ static void parseCanonicTable(char * line , CompressInfo* f_info , int parser[MA
     int i=0;
     while(*line!='\0'){
         unsigned char symb = (unsigned char)line[i];
-        while(line[i] != '\0' && line[i] > '9' && line[i] < '0') i++;
-        while(line[i] != '\0' && line[i] != ' ') parser[symb] = (parser[symb]*10) + (int)line[i++];
-
-        while(line[i++] == ' ');
+        parser[symb] = line[i+1];
+        i+=2;
     }
 }
 
@@ -66,7 +64,8 @@ static int readFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     }
     if(parsing_error) return (INVALID_HEADER_FORMAT);
 
-   
+    //Still need to loop through the parser and do some memory allocations at the end
+    //Also i need to grab each symbol and calculate every single symbol compressed code
 }
 
 /*Decompresses the file back to normal given the information after the execution of Shannon-Fano's algorithm*/
