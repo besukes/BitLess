@@ -11,7 +11,7 @@ int strlent(char * str){
 /*Appends a string right before the format specification for the file (before the .)*/
 void append_beforedot(char *orig,char* dest, char * append){
     if(orig == NULL) return;
-    int i=0 , j = 0;
+    int i=0;
 
     for(;orig[i]!='.' && orig[i]!='\0';i++) dest[i] = orig[i];
 
