@@ -11,21 +11,26 @@ it may (and most likely WILL) NOT WORK on a file compressed using other construc
 text argument that can be sent before the paths.
 */
 #include "decompressor.h"
+#define NO_ERRORS 0
 #define INVALID_PATH 1
-#define NO_HEADER 2
-#define INVALID_HEADER_FORMAT 3
+#define INVALID_HEADER_FORMAT 2
+#define NO_PATH 3
 
 
 /*Error handler for Decompression function*/
-static int dc_error_handler(int flags){
+static int dc_error_handler(int flags , int indx){
     if(flags == INVALID_PATH){
-        printf("[ERROR] Decompression was tried on a invalid path\n");
-        return INVALID_PATH;
+        printf("[ERROR] Decompression was tried on a invalid path at index %d\n",indx);
+        return (INVALID_PATH);
     }
-    else if(flags == NO_HEADER){
-        printf("[ERROR] The file provided by the path doesn't include a decompression header ,"
-                "or includes one in an invalid format\n");
-        return NO_HEADER;
+    else if(flags == INVALID_HEADER_FORMAT){
+        printf("[ERROR] The file provided by the path at position %d doesn't include a decompression header ,"
+                "or includes one in an invalid format\n",indx);
+        return (INVALID_HEADER_FORMAT);
+    }
+    else if(flags == NO_PATH){
+        printf("[ERROR] No paths were included at run time\n");
+        return (NO_PATH);
     }
     return 0;
 }
@@ -41,7 +46,6 @@ static void parseCanonicTable(char * line , CompressInfo* f_info , int parser[MA
         while(line[i++] == ' ');
     }
 }
-
 
 /*Parses file header to store the information on each symbol that exists and keeps its frequency to calculate
 the probability to then apply the Shannon-Fano's algorithm to decompress the file*/
@@ -76,15 +80,33 @@ int decompress_handler(char * path){
     CompressInfo f_info = init_compress_info();
 
     FILE * compressed_file = fopen(path,"r");
-    if(compressed_file == NULL) return (dc_error_handler(INVALID_PATH));
+    if(compressed_file == NULL) return (INVALID_PATH);
 
     int lrb = 0; //Last relevant bits in the file on the last byte
     int is_compressed_file = readFileHeader(compressed_file,&f_info,&lrb);
     fclose(compressed_file);
 
-    if(!is_compressed_file) return (dc_error_handler(NO_HEADER));
+    if(!is_compressed_file) return (INVALID_HEADER_FORMAT);
     
     compressed_file = fopen(path,"r");
     decompress(compressed_file,&f_info);
+
+    return (NO_ERRORS);
+}
+
+
+/* Main function that decompresses every path given to it at run time.*/
+int main(int argc , char ** argv){
+    if(argc < 2) return dc_error_handler(NO_PATH,0);
+    CompressInfo file_info = init_compress_info();
+    int error = 0;
+    for(int i=1;i<argc;i++){
+        resetCompressionInfo(&file_info);
+
+        int decompressable = decompress_handler(argv[i]);
+        if(!decompressable) error = error_handler(INVALID_PATH,i);
+
+        if(error) break;
+    }
     return 0;
 }

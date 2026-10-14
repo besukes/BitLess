@@ -8,8 +8,7 @@ CFLAGS = -Wall -ggdb -Wextra -g3 -fsanitize=address,undefined -I. -Isrc/includes
 
 LDFLAGS = -fsanitize=address,undefined -lm
 
-SRC = src/main.c \
-	  $(wildcard src/compression/*.c) \
+SRC = $(wildcard src/compression/*.c) \
 	  $(wildcard src/algorithms/*.c) \
 	  src/initialization/init_clean.c \
 	  src/parsing/parser.c \
