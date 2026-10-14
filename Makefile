@@ -18,6 +18,12 @@ SRC = src/main.c \
 	  src/writing/write_out.c \
 	  src/debug/debug.c
 
+DCSRC = src/initialization/init_clean.c \
+		$(wildcard src/utils/*.c) \
+		$(wildcard src/algorithms/*.c)
+
+
+
 HDR = src/compression/compressor.h \
 	  $(wildcard src/algorithms/*.h) \
 	  src/debug/debug.h \
@@ -28,21 +34,40 @@ HDR = src/compression/compressor.h \
 	  $(wildcard src/utils/*.h) \
 	  src/writing/write_out.h
 
+DCHDR = src/decompressor/decompressor.h \
+		src/initialization/init_clean.h \
+		src/includes/types.h \
+		$(wildcard src/algorithms/*.h) 
+
+
 
 
 OBJ = $(SRC:%.c=build/%.o)
+DCOBJ = $(DCSRC:%.c=dcbuild/%.o)
 
 
-compressor : $(OBJ) $(HDR)
+compressor: $(OBJ) $(HDR)
 	$(CC) $(OBJ) -o $@ $(LDFLAGS)
+decompressor: $(DCOBJ) $(DCHDR)
+	$(CC) $(DCOBJ) -o $@ $(LDFLAGS)
+
 
 build/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
+dcbuild/%.o: %.c 
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) -c src/decompressor/decompressor.c -o $@
+
+
 
 clean:
 	rm -rf build
-	rm compressor
+	rm -f compressor
+
+cleandc:
+	rm -rf dcbuild
+	rm -f decompressor
 
 rmt:
 	rm -f tests/*_sf.zip tests/*_hf.zip
