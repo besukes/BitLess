@@ -11,14 +11,14 @@ LDFLAGS = -fsanitize=address,undefined -lm
 SRC = src/main.c \
 	  $(wildcard src/compression/*.c) \
 	  $(wildcard src/algorithms/*.c) \
-	  src/decompressor/decompressor.c \
 	  src/initialization/init_clean.c \
 	  src/parsing/parser.c \
 	  $(wildcard src/utils/*.c) \
 	  src/writing/write_out.c \
 	  src/debug/debug.c
 
-DCSRC = src/initialization/init_clean.c \
+DCSRC = src/decompressor/decompressor.c \
+		src/initialization/init_clean.c \
 		$(wildcard src/utils/*.c) \
 		$(wildcard src/algorithms/*.c)
 
@@ -27,7 +27,6 @@ DCSRC = src/initialization/init_clean.c \
 HDR = src/compression/compressor.h \
 	  $(wildcard src/algorithms/*.h) \
 	  src/debug/debug.h \
-	  src/decompressor/decompressor.h \
 	  $(wildcard src/includes/*.h) \
 	  src/initialization/init_clean.h \
 	  src/parsing/parser.h \
@@ -57,7 +56,7 @@ build/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 dcbuild/%.o: %.c 
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c src/decompressor/decompressor.c -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 
 
@@ -65,7 +64,7 @@ clean:
 	rm -rf build
 	rm -f compressor
 
-cleandc:
+rmd:
 	rm -rf dcbuild
 	rm -f decompressor
 
