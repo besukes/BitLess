@@ -17,16 +17,30 @@ Para compilar basta utilizar o comando
 E para abrir o programa basta correr o comando 
 
 ```
-    ./compressor (path)
+    ./compressor (paths)
 ```
 
-Onde **path** seria o caminho para o ficheiro que quer comprimir.
+Onde **paths** seriam os caminhos para os ficheiros que quer comprimir.
 O utilizador pode incluir vários paths e todos eles serão comprimidos.
 Após execução do programa ele díra quanto tempo demorou a comprimir e será gerado um ficheiro do mesmo tipo , na mesma pasta do comprimido , com o nome do ficheiro seguido por "_zip".
 <br>
 Um exemplo prático seria um ficheiro calculos.txt que ficaria no final , na mesma pasta onde se encontra calculos.txt , agora com o nome calculos_zip.txt .
 <br>
-O programa também dirá no final a percentagem de compressão que conseguiu fazer , o rendimento desta compressão , noutras palavras.
+O programa também dirá no final a percentagem de compressão que conseguiu fazer , o rendimento desta compressão , noutras palavras (Ainda não implementado).
+
+<br>
+O utilizador pode optar por descomprimir ficheiros comprimidos (.zip) com o formato canónico próprio deste repositório , utilizando o comando:
+
+```
+    make decompressor
+```
+
+Podendo também depois , na execução , tal como no compressor , de modo análoga , fornecer vários paths para o programa descomprimir todos os ficheiros com:
+
+```
+    ./decompressor (paths)
+```
+
 
 ## Outros comandos
 
@@ -42,6 +56,12 @@ Para apagar os ficheiros ***(%_zip.txt)*** da pasta tests.
 
 ```
     make rmt
+```
+
+Para apagar a pasta dcbuild e o executável ***decompressor***
+
+```
+    make rmd
 ```
 
 
