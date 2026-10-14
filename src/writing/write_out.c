@@ -6,7 +6,8 @@ static void writeDecompressionInfo(FILE * new_file , CompressInfo * file_info){
     fprintf(new_file,"%d\n",0);
     int size = file_info->n_symbols;
     for(int i=0;i<size;i++){
-        fprintf(new_file,"%c%d ",file_info->symbols[i],file_info->newcode_arr[i].length);
+        fputc(file_info->symbols[i],new_file);
+        fputc(file_info->newcode_arr[i].length,new_file);
     }
     fprintf(new_file,"\nend\n");
 }

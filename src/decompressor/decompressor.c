@@ -31,7 +31,7 @@ static int dc_error_handler(int flags){
 }
 
 /*Reads the frequency table of a compressed file header and stores the information directly onto f_info*/
-static void parseFrequencyTable(char * line , CompressInfo* f_info , int parser[MAX_SYMBOLS]){
+static void parseCanonicTable(char * line , CompressInfo* f_info , int parser[MAX_SYMBOLS]){
     int i=0;
     while(*line!='\0'){
         unsigned char symb = (unsigned char)line[i];
@@ -58,11 +58,11 @@ static int readFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     int parser[MAX_SYMBOLS] = {0};
     while(!strcontain(line,"end") && !parsing_error){
         parsing_error = (fgets(line,LINE_MAX,file) == NULL);
-        parseFrequencyTable(line,f_info,parser);
+        parseCanonicTable(line,f_info,parser);
     }
     if(parsing_error) return (INVALID_HEADER_FORMAT);
 
-    //Still needs to implement Shannon-Fanno reverse algorithm
+   
 }
 
 /*Decompresses the file back to normal given the information after the execution of Shannon-Fano's algorithm*/
