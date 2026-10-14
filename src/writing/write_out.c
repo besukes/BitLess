@@ -45,7 +45,7 @@ int count_bits(unsigned long long value){
 }
 
 /*Given an line from a life prints out the given new symbol generated that represents each character on it.*/
-static void writeCompressedFileLine(char * line , CompressInfo * file_info , FILE * new_file , BitWriter * bw){
+static void writeCompressedFileLine(char * line , CompressInfo * file_info , BitWriter * bw){
     //Just for safety purposes
     if(file_info->n_symbols == 0){
         printf("[ATTENTION] No symbols found in file\n");
@@ -70,8 +70,12 @@ static void writeCompressedFileLine(char * line , CompressInfo * file_info , FIL
 compresses the file with some simple functions*/
 void writeOutCompressedFile(CompressInfo * file_info){
     int length = strlent(file_info->file_path);
-    char new_path[length + 5];
-    append_zip(file_info->file_path,new_path);
+    char new_path[length + 8];
+
+    if(COMPRESSION_ALGORITHM == ShannonFano)
+        append_beforedot(file_info->file_path,new_path,"_zipsf");
+    else append_beforedot(file_info->file_path,new_path,"_ziphf");
+
     FILE * new_file = fopen(new_path,"r");
     if(new_file!=NULL){
         fclose(new_file);
@@ -94,7 +98,7 @@ void writeOutCompressedFile(CompressInfo * file_info){
 
     char line[LINE_MAX];
     while(fgets(line,LINE_MAX,file_info->file)){
-        writeCompressedFileLine(line,file_info,new_file,&bw);
+        writeCompressedFileLine(line,file_info,&bw);
     }
     int flushout_bits = flushout(&bw);
 

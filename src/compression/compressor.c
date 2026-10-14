@@ -34,7 +34,6 @@ int compressFile(CompressInfo * file_info){
     if(COMPRESSION_ALGORITHM == Huffman){
         Node * tree_root = build_tree(file_info->probabilities,file_info->n_symbols,file_info->total_symbols);
         deconstruct_tree(file_info->newcode_arr,0,0,tree_root);
-        // Still need to free the memory created by the build_tree function
     }
     else sfcompress(file_info->probabilities,file_info->newcode_arr,file_info->n_symbols,0.5f);
 
