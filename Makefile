@@ -45,4 +45,4 @@ clean:
 	rm compressor
 
 rmt:
-	rm -f tests/*_zipsf.txt tests/*_ziphf.txt
+	rm -f tests/*_sf.zip tests/*_hf.zip
