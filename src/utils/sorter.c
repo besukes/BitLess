@@ -26,7 +26,7 @@ void DecrescentSortByP(char *symbols, float *probability, int number_s){
 
 
 /*Sorts Descrently by probability, still need to change this*/
-void CrescentSortByP(float *probability, int number_s){
+void CrescentSortByP(char* symbols , float* probability, int number_s){
     for(int i = 0; i < number_s - 1; i++){
         int min_idx = i;
         for(int j = i + 1; j < number_s; j++){
@@ -39,6 +39,11 @@ void CrescentSortByP(float *probability, int number_s){
             float f_temp = probability[i];
             probability[i] = probability[min_idx];
             probability[min_idx] = f_temp;
+
+            // Swap symbols
+            char c_temp = symbols[i];
+            symbols[i] = symbols[min_idx];
+            symbols[min_idx] = c_temp;
         }
     }
 }
