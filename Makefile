@@ -10,7 +10,7 @@ LDFLAGS = -fsanitize=address,undefined -lm
 
 SRC = src/main.c \
 	  $(wildcard src/compression/*.c) \
-	  $(wildcard src/data/*.c) \
+	  $(wildcard src/algorithms/*.c) \
 	  src/decompressor/decompressor.c \
 	  src/initialization/init_clean.c \
 	  src/parsing/parser.c \
@@ -19,7 +19,7 @@ SRC = src/main.c \
 	  src/debug/debug.c
 
 HDR = src/compression/sf_compressor.h \
-	  src/data/huff_tree.h \
+	  $(wildcard src/algorithms/*.h) \
 	  src/debug/debug.h \
 	  src/decompressor/decompressor.h \
 	  $(wildcard src/includes/*.h) \

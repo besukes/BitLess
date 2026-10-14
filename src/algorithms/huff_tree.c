@@ -1,6 +1,18 @@
 #include "huff_tree.h"
+/*
+    Module that contains Huffman's data compression algorithm.
+    This algorithm works by , given a crescently ordered list of each symbols probability , creates N leaf nodes ,
+with N being the amount of symbols.
+    The leaf nodes now get called child nodes and then the algorithm turns both of the less frequent nodes in
+this set into just 1 and sorting the new set , creating a set with N-1 elements.
+    This same procedure loops until we have only 1 NODE , which links to every other node through a tree.
+    We can then travess the tree on it's left and right , and to each left subset we add a 1 to the path ,
+and 0 to the right , increasing the depth of our recursive call function.
+    When we reach a root , i.e both left and right nodes of a node are NULL , we know we reached a leaf node ,
+and therefore we can assign that symbols code as the path it took from the root to that same NODE , and its code
+length the function's recursive depth.
 
-
+*/
 
 /*  Removes the leaves[0] and leaves[1] from the array , substituing by the father node , and then sorting the entire array so we are left with
 an array that has each element sorted by its frequency , crescently*/
