@@ -88,18 +88,21 @@ Node * build_tree(float * probabilities , int limArr , int totalsymb){
 }
 
 
-/*Deconstructs the huffman tree and when it reaches the leaf nodes , gives each symbol its new format.*/
+/*  Deconstructs the huffman tree and when it reaches the leaf nodes , gives each symbol its new format.
+    Frees the memory allocated while doing so.*/
 void deconstruct_tree(NewSymbols * new_symb , ULL path , int depth , Node * root){
     if(root!= NULL){
         if(root->left == NULL && root->right == NULL){
             new_symb[root->indx].new_code = path;
             new_symb[root->indx].length = depth;
+            free(root);
         }
         else{
             ULL left_path = (path<<1) | 0 , 
                 right_path = (path<<1) | 1;
             deconstruct_tree(new_symb,left_path,depth+1,root->left);
             deconstruct_tree(new_symb,right_path,depth+1,root->right);
+            free(root);
         }
     }
 }
