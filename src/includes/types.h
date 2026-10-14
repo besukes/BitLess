@@ -4,9 +4,9 @@
 
 #define LINE_MAX 2048
 #define MAX_SYMBOLS 256
-#define COMPRESSION_ALGORITHM 0
-
 typedef enum {ShannonFano , Huffman} Algorithm;
+#define COMPRESSION_ALGORITHM Huffman
+
 typedef unsigned long long ULL;
 
 /* Struct that holds each Symbol new code and the length of relevant bits of the code*/
