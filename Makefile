@@ -18,7 +18,7 @@ SRC = src/main.c \
 	  src/writing/write_out.c \
 	  src/debug/debug.c
 
-HDR = src/compression/sf_compressor.h \
+HDR = src/compression/compressor.h \
 	  $(wildcard src/algorithms/*.h) \
 	  src/debug/debug.h \
 	  src/decompressor/decompressor.h \
@@ -45,4 +45,4 @@ clean:
 	rm compressor
 
 rmt:
-	rm -f tests/*_zip.txt
+	rm -f tests/*_zipsf.txt tests/*_ziphf.txt
