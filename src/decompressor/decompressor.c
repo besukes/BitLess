@@ -36,18 +36,19 @@ static int dc_error_handler(int flags , int indx){
 }
 
 /*Reads the frequency table of a compressed file header and stores the information directly onto f_info*/
-static void parseCanonicTable(char * line , CompressInfo* f_info , int parser[MAX_SYMBOLS]){
+static void readHeaderLine(char * line , CompressInfo* f_info , int parser[MAX_SYMBOLS] , int* N){
     int i=0;
     while(*line!='\0'){
         unsigned char symb = (unsigned char)line[i];
         parser[symb] = line[i+1];
         i+=2;
+        N++;
     }
 }
 
 /*Parses file header to store the information on each symbol that exists and keeps its frequency to calculate
 the probability to then apply the Shannon-Fano's algorithm to decompress the file*/
-static int readFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
+static int parseFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     char line[LINE_MAX];
 
     //Reads the last relevant bits in the last relevant byte , stored at the start of the header
@@ -58,14 +59,35 @@ static int readFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     //Reads the Frequency table of each symbol to reconstruct the probabilities table
     int parsing_error = 0;
     int parser[MAX_SYMBOLS] = {0};
+    int number_symbols = 0;
     while(!strcontain(line,"end") && !parsing_error){
         parsing_error = (fgets(line,LINE_MAX,file) == NULL);
-        parseCanonicTable(line,f_info,parser);
+        readHeaderLine(line,f_info,parser,&number_symbols);
     }
     if(parsing_error) return (INVALID_HEADER_FORMAT);
 
-    //Still need to loop through the parser and do some memory allocations at the end
-    //Also i need to grab each symbol and calculate every single symbol compressed code
+    f_info->n_symbols = number_symbols;
+    f_info->symbols = malloc(sizeof(char)*number_symbols);
+    f_info->newcode_arr = malloc(sizeof(NewSymbols)*number_symbols);
+
+    for(int i=0,j=0;i<256;i++){
+        if(parser[i]){
+            f_info->symbols[j] = i;
+            f_info->newcode_arr[j].length = parser[i];
+            f_info->newcode_arr[j].new_code = 0;
+            j++;
+        }
+    }
+
+    //Sorts both the arrays in an crescent order , by code length
+    sortByCodeLength(f_info->symbols,f_info->newcode_arr,number_symbols);
+    
+    //If the code has a length superior to the index before him , then adding one wont result on a bigger length most likely
+    for(int n=1;n<number_symbols - 1;n++){
+        if(f_info->newcode_arr[n-1].length < f_info->newcode_arr[n].length)
+            f_info->newcode_arr[n].new_code = (f_info->newcode_arr[n-1].new_code + 1) << 1;
+        else f_info->newcode_arr[n].new_code = f_info->newcode_arr[n-1].new_code + 1;
+    }
 }
 
 /*Decompresses the file back to normal given the information after the execution of Shannon-Fano's algorithm*/
@@ -82,13 +104,13 @@ int decompress_handler(char * path){
     if(compressed_file == NULL) return (INVALID_PATH);
 
     int lrb = 0; //Last relevant bits in the file on the last byte
-    int is_compressed_file = readFileHeader(compressed_file,&f_info,&lrb);
+    int is_compressed_file = parseFileHeader(compressed_file,&f_info,&lrb);
     fclose(compressed_file);
 
     if(!is_compressed_file) return (INVALID_HEADER_FORMAT);
     
     compressed_file = fopen(path,"r");
-    decompress(compressed_file,&f_info);
+    decompress(compressed_file,&f_info); // I need to create a new file with the same path but ending in .txt instead of .zip
 
     return (NO_ERRORS);
 }
@@ -107,5 +129,6 @@ int main(int argc , char ** argv){
 
         if(error) break;
     }
+    free_memory(&file_info);
     return 0;
 }
