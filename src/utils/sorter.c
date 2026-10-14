@@ -25,7 +25,7 @@ void DecrescentSortByP(char *symbols, float *probability, int number_s){
 }
 
 
-/*Sorts Descrently by probability*/
+/*Sorts Descrently by probability, still need to change this*/
 void CrescentSortByP(float *probability, int number_s){
     for(int i = 0; i < number_s - 1; i++){
         int min_idx = i;
