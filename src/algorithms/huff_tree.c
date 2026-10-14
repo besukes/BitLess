@@ -98,8 +98,8 @@ void deconstruct_tree(NewSymbols * new_symb , ULL path , int depth , Node * root
             free(root);
         }
         else{
-            ULL left_path = (path<<1) | 0 , 
-                right_path = (path<<1) | 1;
+            ULL left_path = (path<<1) | 1 ,
+                right_path = (path<<1) | 0;
             deconstruct_tree(new_symb,left_path,depth+1,root->left);
             deconstruct_tree(new_symb,right_path,depth+1,root->right);
             free(root);
