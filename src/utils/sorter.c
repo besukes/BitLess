@@ -47,3 +47,27 @@ void CrescentSortByP(char* symbols , float* probability, int number_s){
         }
     }
 }
+
+
+/* Sorts two arrays by the seconds array code length stored in a struct*/
+void sortByCodeLength(char* symbs , NewSymbols* code , int N){
+    for(int i = 0; i < N - 1; i++){
+        int min_idx = i;
+        for(int j = i + 1; j < N; j++){
+            if(code[j].length < code[min_idx].length){
+                min_idx = j;
+            }
+        }
+        if(min_idx != i){
+            // Swap the struct
+            NewSymbols f_temp = code[i];
+            code[i] = code[min_idx];
+            code[min_idx] = f_temp;
+
+            // Swap symbols
+            char c_temp = symbs[i];
+            symbs[i] = symbs[min_idx];
+            symbs[min_idx] = c_temp;
+        }
+    }
+}
