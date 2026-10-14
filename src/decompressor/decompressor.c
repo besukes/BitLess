@@ -103,8 +103,8 @@ int main(int argc , char ** argv){
     for(int i=1;i<argc;i++){
         resetCompressionInfo(&file_info);
 
-        int decompressable = decompress_handler(argv[i]);
-        if(!decompressable) error = error_handler(INVALID_PATH,i);
+        int error_arrived = decompress_handler(argv[i]);
+        if(error_arrived) error = error_handler(error_arrived,i);
 
         if(error) break;
     }
