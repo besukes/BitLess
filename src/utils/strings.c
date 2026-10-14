@@ -19,8 +19,7 @@ void append_beforedot(char *orig,char* dest, char * append){
     for(u=0;append[u]!='\0';u++)
         dest[i+u] = append[u];
 
-    for(j=i+u;orig[i]!='\0';j++,i++) dest[j] = orig[i];
-    dest[j] = '\0';
+    dest[i+u] = '\0';
 }
 
 /*Checks if a string CONTAINER contains a CONTEDED string at its begging*/

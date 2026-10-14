@@ -73,8 +73,8 @@ void writeOutCompressedFile(CompressInfo * file_info){
     char new_path[length + 8];
 
     if(COMPRESSION_ALGORITHM == ShannonFano)
-        append_beforedot(file_info->file_path,new_path,"_zipsf");
-    else append_beforedot(file_info->file_path,new_path,"_ziphf");
+        append_beforedot(file_info->file_path,new_path,"_sf.zip");
+    else append_beforedot(file_info->file_path,new_path,"_hf.zip");
 
     FILE * new_file = fopen(new_path,"r");
     if(new_file!=NULL){
