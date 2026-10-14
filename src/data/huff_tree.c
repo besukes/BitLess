@@ -4,37 +4,37 @@
 
 /*  Removes the leaves[0] and leaves[1] from the array , substituing by the father node , and then sorting the entire array so we are left with
 an array that has each element sorted by its frequency , crescently*/
-static void SortLeafNodes(Node * leaves[] , int nleaves , Node * father , Node ** left , Node ** right){
-    leaves[0] = father;
-    for(int i=1;i<nleaves-1;i++) leaves[i] = leaves[i+1]; //These 2 lines substitutes indexes 0 and 1 for the father
+static void SortChildNodes(Node * child[] , int N , Node * father , Node ** left , Node ** right){
+    child[0] = father;
+    for(int i=1;i<N-1;i++) child[i] = child[i+1]; //These 2 lines substitutes indexes 0 and 1 for the father
 
-    nleaves--; //Reduces the size , as we decreased 1 element in leaves
+    N--; //Reduces the size , as we decreased 1 element in leaves
     // If we remove indx 0 and 1 and we are left with only 1 element , its the father
     // Therefore we should return
-    if(nleaves <= 1){
+    if(N <= 1){
         *left = father;
         *right = NULL;
         return;
     }
 
     //Selection sort
-    for(int i = 0; i < nleaves - 1; i++){
+    for(int i = 0; i < N - 1; i++){
         int min_idx = i;
-        for(int j = i + 1; j < nleaves; j++){
-            if(leaves[j]->frequency < leaves[min_idx]->frequency){
+        for(int j = i + 1; j < N; j++){
+            if(child[j]->frequency < child[min_idx]->frequency){
                 min_idx = j;
             }
         }
         if(min_idx != i){
             // Swap Nodes
-            Node* temp = leaves[i];
-            leaves[i] = leaves[min_idx];
-            leaves[min_idx] = temp;
+            Node* temp = child[i];
+            child[i] = child[min_idx];
+            child[min_idx] = temp;
         }
     }
-    // We know nleaves is greater than 1 , therefore it is memory safe to do this
-    *left = leaves[0];
-    *right = leaves[1];
+    // We know nchildren is greater than 1 , therefore it is memory safe to do this
+    *left = child[0];
+    *right = child[1];
 }
 
 
@@ -45,18 +45,18 @@ static void SortLeafNodes(Node * leaves[] , int nleaves , Node * father , Node *
 Node * build_tree(float * probabilities , int limArr , int totalsymb){
     if(limArr <= 1) return NULL; //for satefy measures , i.e if the starting array has only 1 element
 
-    Node * leaf_nodes[limArr];
+    Node * child_nodes[limArr];
     for(int i=0;i<limArr;i++){ //Builds the leaf nodes of every symbol
-        leaf_nodes[i] = malloc(sizeof(Node));
-        leaf_nodes[i]->frequency = (int)(probabilities[i]*totalsymb);
-        leaf_nodes[i]->indx = i; //This is the same index for the ULL newSymbols list , so this works out
-        leaf_nodes[i]->left = NULL;
-        leaf_nodes[i]->right = NULL;
+        child_nodes[i] = malloc(sizeof(Node));
+        child_nodes[i]->frequency = (int)(probabilities[i]*totalsymb);
+        child_nodes[i]->indx = i; //This is the same index for the ULL newSymbols list , so this works out
+        child_nodes[i]->left = NULL;
+        child_nodes[i]->right = NULL;
     }
 
     // We know limArr > 1 , so we can use indexes 0 and 1
-    Node * left_node = leaf_nodes[0] , 
-         * right_node = leaf_nodes[1];
+    Node * left_node = child_nodes[0] , 
+         * right_node = child_nodes[1];
     Node * father = NULL;
 
     while(limArr > 1){
@@ -67,9 +67,8 @@ Node * build_tree(float * probabilities , int limArr , int totalsymb){
         father->left = left_node;
         father->right = right_node;
 
-        left_node = father;
         //It assumes the currently left_node and right_node are the indexes 0 and 1 of leaf_nodes , as it is always sorted
-        SortLeafNodes(leaf_nodes,limArr,father,&left_node,&right_node); //It assumes the currently left_node and right_node
+        SortChildNodes(child_nodes,limArr,father,&left_node,&right_node); //It assumes the currently left_node and right_node
 
         limArr--;
     }
