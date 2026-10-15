@@ -15,6 +15,7 @@ text argument that can be sent before the paths.
 #define INVALID_PATH 1
 #define INVALID_HEADER_FORMAT 2
 #define NO_PATH 3
+#define ALREADY_EXISTING_FOLDER 4
 
 
 /*Error handler for Decompression function*/
@@ -32,17 +33,22 @@ static int dc_error_handler(int flags , int indx){
         printf("[ERROR] No paths were included at run time\n");
         return (NO_PATH);
     }
+    else if(flags == ALREADY_EXISTING_FOLDER){
+        printf("[ERROR] Error while making the decompressed file\n");
+        return (ALREADY_EXISTING_FOLDER);
+    }
     return 0;
 }
 
 /*Reads the frequency table of a compressed file header and stores the information directly onto f_info*/
 static void readHeaderLine(char * line , CompressInfo* f_info , int parser[MAX_SYMBOLS] , int* N){
     int i=0;
-    while(*line!='\0'){
+    while(line[i]!='\0'){
         unsigned char symb = (unsigned char)line[i];
         parser[symb] = line[i+1];
-        i+=2;
-        N++;
+        if(line[i+1] == '\0') i++;
+        else i+=2;
+        (*N)++;
     }
 }
 
@@ -60,8 +66,9 @@ static int parseFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     int parsing_error = 0;
     int parser[MAX_SYMBOLS] = {0};
     int number_symbols = 0;
-    while(!strcontain(line,"end") && !parsing_error){
+    while(!strcontain(line,"end")){
         parsing_error = (fgets(line,LINE_MAX,file) == NULL);
+        if(parsing_error) break;
         readHeaderLine(line,f_info,parser,&number_symbols);
     }
     if(parsing_error) return (INVALID_HEADER_FORMAT);
@@ -88,11 +95,37 @@ static int parseFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
             f_info->newcode_arr[n].new_code = (f_info->newcode_arr[n-1].new_code + 1) << 1;
         else f_info->newcode_arr[n].new_code = f_info->newcode_arr[n-1].new_code + 1;
     }
+    return (NO_ERRORS);
 }
 
 /*Decompresses the file back to normal given the information after the execution of Shannon-Fano's algorithm*/
-static void decompress(FILE* ext_file ,CompressInfo* f_info){
-
+static void decompress(FILE* ext_file ,CompressInfo* f_info , int lrb){
+    char line[LINE_MAX];
+    FILE * cmp_file = f_info->file;
+    unsigned long long buffer = 0;
+    int buffer_size = 0;
+    while(fgets(line,LINE_MAX,cmp_file)){
+        for(int i=0;line[i]!='\0';i++){
+            unsigned long long byte = (unsigned long long)line[i];
+            while(byte){
+                unsigned long long mrb = byte & (1ULL<<8); //Char has 8 bits , we get the most relevant bit
+                byte<<=1;
+                buffer |= mrb;
+                buffer_size++;
+                for(int j=0;j<f_info->n_symbols;j++){
+                    int length = f_info->newcode_arr[j].length;
+                    if(length == buffer_size){
+                        if(buffer == f_info->newcode_arr[j].new_code){
+                            fprintf(ext_file,"%c",f_info->symbols[j]);
+                            buffer = 0;
+                            buffer_size = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //Still need to take care of the last file byte and use lrb for the last relevant bits in the last byte
 }
 
 
@@ -104,13 +137,28 @@ int decompress_handler(char * path){
     if(compressed_file == NULL) return (INVALID_PATH);
 
     int lrb = 0; //Last relevant bits in the file on the last byte
-    int is_compressed_file = parseFileHeader(compressed_file,&f_info,&lrb);
+    int parsing_error = parseFileHeader(compressed_file,&f_info,&lrb);
     fclose(compressed_file);
 
-    if(!is_compressed_file) return (INVALID_HEADER_FORMAT);
+    if(parsing_error) return (INVALID_HEADER_FORMAT);
     
     compressed_file = fopen(path,"r");
-    decompress(compressed_file,&f_info); // I need to create a new file with the same path but ending in .txt instead of .zip
+    f_info.file = compressed_file;
+    f_info.file_path = path;
+
+    int size = strlent(f_info.file_path);
+    char new_path[size];
+    append_before_format(f_info.file_path,new_path,".txt");
+
+    FILE * new_file = fopen(new_path,"r");
+    if(new_file != NULL){
+        fclose(new_file);
+        printf("There's already a file named %s , therefore the program won't overwrite\n",new_path);
+        return (ALREADY_EXISTING_FOLDER);
+    }
+    new_file = fopen(new_path,"w");
+
+    decompress(new_file,&f_info,lrb);
 
     return (NO_ERRORS);
 }
@@ -125,7 +173,7 @@ int main(int argc , char ** argv){
         resetCompressionInfo(&file_info);
 
         int error_arrived = decompress_handler(argv[i]);
-        if(error_arrived) error = error_handler(error_arrived,i);
+        if(error_arrived) error = dc_error_handler(error_arrived,i);
 
         if(error) break;
     }
