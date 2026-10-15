@@ -147,7 +147,7 @@ int decompress_handler(char * path){
     f_info.file_path = path;
 
     int size = strlent(f_info.file_path);
-    char new_path[size];
+    char new_path[size + 1];
     append_before_format(f_info.file_path,new_path,".txt");
 
     FILE * new_file = fopen(new_path,"r");
