@@ -1,0 +1,17 @@
+#Ignore binary folders
+build
+dcbuild
+
+#Ignore binary content
+*.o
+
+#Ignore executables
+compressor
+decompressor
+
+#Ignore newmade files
+tests/*_hf.zip
+tests/*_sf.zip
+tests/*_hf.txt
+tests/*_sf.txt
+
