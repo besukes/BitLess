@@ -69,3 +69,5 @@ rmd:
 
 rmt:
 	rm -f tests/*_sf.zip tests/*_hf.zip
+rmc:
+	rm -f tests/*_hf.txt
