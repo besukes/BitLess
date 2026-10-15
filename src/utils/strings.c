@@ -21,7 +21,7 @@ void append_before_format(char* orig,char* dest, char * append){
         else{
             int k;
             for(k=i+1;orig[k]!='\0' && orig[k]!= '.';k++);
-            if(orig[k] == '.' && k!=i) i++; //Se encontrar outro ponto antes do final da string , entao o indx "i" nao e o ultimo
+            if(orig[k] == '.' && k!=i) i++; //If it finds a dot before \0 then the indx i doesnt have the format dot
             else loop = 0;
         }
     }
