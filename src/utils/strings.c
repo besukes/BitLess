@@ -9,12 +9,22 @@ int strlent(char * str){
 }
 
 /*Appends a string right before the format specification for the file (before the .)*/
-void append_beforedot(char *orig,char* dest, char * append){
+void append_before_format(char* orig,char* dest, char * append){
     if(orig == NULL) return;
     int i=0;
+    int loop = 1;
+    //Verifies if any of the folders leading to the file has a dot in it , if it has then it needs to continue the search
+    while(loop){
+        for(;orig[i]!='.' && orig[i]!='\0';i++) dest[i] = orig[i];
 
-    for(;orig[i]!='.' && orig[i]!='\0';i++) dest[i] = orig[i];
-
+        if(orig[i] == '\0') loop = 0;
+        else{
+            int k;
+            for(k=i+1;orig[k]!='\0' && orig[k]!= '.';k++);
+            if(orig[k] == '.' && k!=i) i++; //Se encontrar outro ponto antes do final da string , entao o indx "i" nao e o ultimo
+            else loop = 0;
+        }
+    }
     int u;
     for(u=0;append[u]!='\0';u++)
         dest[i+u] = append[u];
