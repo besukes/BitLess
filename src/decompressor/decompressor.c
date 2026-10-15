@@ -60,16 +60,14 @@ static int parseFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
 
     //Reads the last relevant bits in the last relevant byte , stored at the start of the header
     fgets(line,LINE_MAX,file);
-    *lrb = (int)line[0];
+    *lrb = (int)line[0] - '0';
     if(line[1] != '\n') return (INVALID_HEADER_FORMAT);
 
     //Reads the Frequency table of each symbol to reconstruct the probabilities table
     int parsing_error = 0;
     int parser[MAX_SYMBOLS] = {0};
     int number_symbols = 0;
-    while(!strcontain(line,"end")){
-        parsing_error = (fgets(line,LINE_MAX,file) == NULL);
-        if(parsing_error) break;
+    while(fgets(line,LINE_MAX,file) && !strcontain(line,"end")){
         readHeaderLine(line,f_info,parser,&number_symbols);
     }
     if(parsing_error) return (INVALID_HEADER_FORMAT);
@@ -92,8 +90,10 @@ static int parseFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     
     //If the code has a length superior to the index before him , then adding one wont result on a bigger length most likely
     for(int n=1;n<number_symbols - 1;n++){
-        if(f_info->newcode_arr[n-1].length < f_info->newcode_arr[n].length)
-            f_info->newcode_arr[n].new_code = (f_info->newcode_arr[n-1].new_code + 1) << 1;
+        if(f_info->newcode_arr[n-1].length < f_info->newcode_arr[n].length){
+            int shift = f_info->newcode_arr[n].length - f_info->newcode_arr[n-1].length;
+            f_info->newcode_arr[n].new_code = (f_info->newcode_arr[n-1].new_code + 1) << shift;
+        }
         else f_info->newcode_arr[n].new_code = f_info->newcode_arr[n-1].new_code + 1;
     }
     return (NO_ERRORS);
@@ -138,11 +138,9 @@ static int decompress_handler(char * path , CompressInfo* f_info){
 
     int lrb = 0; //Last relevant bits in the file on the last byte
     int parsing_error = parseFileHeader(compressed_file,f_info,&lrb);
-    fclose(compressed_file);
 
     if(parsing_error) return (INVALID_HEADER_FORMAT);
     
-    compressed_file = fopen(path,"r");
     f_info->file = compressed_file;
     f_info->file_path = path;
 
