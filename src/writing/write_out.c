@@ -3,13 +3,15 @@
 
 /*Writes decompresssion info in the notation NEW_SYMBOL = OLD_SYMBOL in order to decompress after*/
 static void writeDecompressionInfo(FILE * new_file , CompressInfo * file_info){
-    fprintf(new_file,"%d\n",0);
+    fputc(0,new_file);
+    fputc(file_info->n_symbols,new_file);
+    fprintf(new_file,"\n");
     int size = file_info->n_symbols;
     for(int i=0;i<size;i++){
         fputc(file_info->symbols[i],new_file);
         fputc(file_info->newcode_arr[i].length,new_file);
     }
-    fprintf(new_file,"\nend\n");
+    fprintf(new_file,"\n");
 }
 
 
@@ -104,7 +106,7 @@ void writeOutCompressedFile(CompressInfo * file_info){
 
     //Updates to store the last relevant bits on the last byte of the file
     fseek(new_file,0,SEEK_SET);
-    fprintf(new_file,"%d\n",flushout_bits);
+    fputc(flushout_bits,new_file);
     fseek(new_file,0,SEEK_END);
 
     fclose(new_file);

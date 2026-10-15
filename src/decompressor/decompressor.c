@@ -48,10 +48,8 @@ static void readHeaderLine(char * line , CompressInfo* f_info , int parser[MAX_S
         unsigned char symb = (unsigned char)line[i];
         parser[symb] = line[i+1];
         if(line[i+1] == '\0') i++;
-        else{ //This still doesnt fix the issue
-            i+=2;
-            (*N)++;
-        }
+        else i+=2;
+        (*N)--;
     }
 }
 
@@ -62,15 +60,15 @@ static int parseFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
 
     //Reads the last relevant bits in the last relevant byte , stored at the start of the header
     fgets(line,LINE_MAX,file);
-    *lrb = (int)line[0] - '0';
-    if(line[1] != '\n') return (INVALID_HEADER_FORMAT);
+    *lrb = (int)line[0];
+    if(line[1] == '\n' || line[2] != '\n') return (INVALID_HEADER_FORMAT);
+    int number_symbols = (int)line[1] , keep_searching = number_symbols;
 
     //Reads the Frequency table of each symbol to reconstruct the probabilities table
     int parsing_error = 0;
     int parser[MAX_SYMBOLS] = {0};
-    int number_symbols = 0;
-    while(fgets(line,LINE_MAX,file) && !strcontain(line,"end")){
-        readHeaderLine(line,f_info,parser,&number_symbols);
+    while(fgets(line,LINE_MAX,file) && keep_searching){
+        readHeaderLine(line,f_info,parser,&keep_searching);
     }
     if(parsing_error) return (INVALID_HEADER_FORMAT);
 
