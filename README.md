@@ -1,10 +1,14 @@
 ## Overview
 
-BitLess é um simples compressor de dados que utiliza algoritmos como o de Shannon-Fano para reduzir o tamanho de ficheiros.<br>
+BitLess é um simples compressor de dados que utiliza algoritmos como o de Shannon-Fano e Huffman para reduzir o tamanho de ficheiros.<br>
 
-Este repositório foi criado após aprender o algoritmo Shannon-Fano de compressão de dados , para aprender melhor como funcionam algoritmos de compressão na prática , como um tipo de inicialização na matéria.
+
+ Este projeto foi iniciado no dia **26 de setembro de 2026** por um estudante de Engenharia Informática na ***UMinho*** e foi criado após aprender o algoritmo Shannon-Fano de compressão de dados , para aprender melhor como funcionam algoritmos de compressão na prática , como um tipo de inicialização na matéria.
 <br>
-Este projeto foi iniciado no dia **26 de setembro de 2026** por um estudante de Engenharia Informática na UMinho.
+
+ Posteriormente também foi implementado o algoritmo de huffman por uma questão de maior eficácia e aprendizado.
+<br>
+
 
 ## Compilação
 
