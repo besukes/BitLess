@@ -18,6 +18,7 @@ text argument that can be sent before the paths.
 #define ALREADY_EXISTING_FOLDER 4
 
 
+
 /*Error handler for Decompression function*/
 static int dc_error_handler(int flags , int indx){
     if(flags == INVALID_PATH){
@@ -130,7 +131,7 @@ static void decompress(FILE* ext_file ,CompressInfo* f_info , int lrb){
 
 
 /*Decompression function that grabs a compressed file and decompresses it back to normal */
-int decompress_handler(char * path , CompressInfo* f_info){
+static int decompress_handler(char * path , CompressInfo* f_info){
 
     FILE * compressed_file = fopen(path,"r");
     if(compressed_file == NULL) return (INVALID_PATH);
