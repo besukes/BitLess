@@ -74,14 +74,13 @@ void writeOutCompressedFile(CompressInfo * file_info){
     char new_path[length + 8];
 
     if(COMPRESSION_ALGORITHM == ShannonFano)
-        append_beforedot(file_info->file_path,new_path,"_sf.zip");
-    else append_beforedot(file_info->file_path,new_path,"_hf.zip");
+        append_before_format(file_info->file_path,new_path,"_sf.zip");
+    else append_before_format(file_info->file_path,new_path,"_hf.zip");
 
     FILE * new_file = fopen(new_path,"r");
     if(new_file!=NULL){
         fclose(new_file);
-        printf("Já possui um ficheiro com o nome %s , pelo que o programa não vai dar overwrite\n",
-            new_path);
+        printf("There's already a file named %s , therefore the program won't overwrite\n",new_path);
         return;
     }
     new_file = fopen(new_path,"w");
