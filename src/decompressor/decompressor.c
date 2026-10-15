@@ -48,8 +48,10 @@ static void readHeaderLine(char * line , CompressInfo* f_info , int parser[MAX_S
         unsigned char symb = (unsigned char)line[i];
         parser[symb] = line[i+1];
         if(line[i+1] == '\0') i++;
-        else i+=2;
-        (*N)++;
+        else{ //This still doesnt fix the issue
+            i+=2;
+            (*N)++;
+        }
     }
 }
 
@@ -89,7 +91,7 @@ static int parseFileHeader(FILE* file,CompressInfo* f_info,int * lrb){
     sortByCodeLength(f_info->symbols,f_info->newcode_arr,number_symbols);
     
     //If the code has a length superior to the index before him , then adding one wont result on a bigger length most likely
-    for(int n=1;n<number_symbols - 1;n++){
+    for(int n=1;n<number_symbols;n++){
         if(f_info->newcode_arr[n-1].length < f_info->newcode_arr[n].length){
             int shift = f_info->newcode_arr[n].length - f_info->newcode_arr[n-1].length;
             f_info->newcode_arr[n].new_code = (f_info->newcode_arr[n-1].new_code + 1) << shift;
@@ -157,6 +159,7 @@ static int decompress_handler(char * path , CompressInfo* f_info){
 
     new_file = fopen(new_path,"w");
     decompress(new_file,f_info,lrb);
+    fclose(new_file);
 
     return (NO_ERRORS);
 }
