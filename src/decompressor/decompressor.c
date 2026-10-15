@@ -130,25 +130,24 @@ static void decompress(FILE* ext_file ,CompressInfo* f_info , int lrb){
 
 
 /*Decompression function that grabs a compressed file and decompresses it back to normal */
-int decompress_handler(char * path){
-    CompressInfo f_info = init_compress_info();
+int decompress_handler(char * path , CompressInfo* f_info){
 
     FILE * compressed_file = fopen(path,"r");
     if(compressed_file == NULL) return (INVALID_PATH);
 
     int lrb = 0; //Last relevant bits in the file on the last byte
-    int parsing_error = parseFileHeader(compressed_file,&f_info,&lrb);
+    int parsing_error = parseFileHeader(compressed_file,f_info,&lrb);
     fclose(compressed_file);
 
     if(parsing_error) return (INVALID_HEADER_FORMAT);
     
     compressed_file = fopen(path,"r");
-    f_info.file = compressed_file;
-    f_info.file_path = path;
+    f_info->file = compressed_file;
+    f_info->file_path = path;
 
-    int size = strlent(f_info.file_path);
+    int size = strlent(f_info->file_path);
     char new_path[size + 1];
-    append_before_format(f_info.file_path,new_path,".txt");
+    append_before_format(f_info->file_path,new_path,".txt");
 
     FILE * new_file = fopen(new_path,"r");
     if(new_file != NULL){
@@ -156,9 +155,9 @@ int decompress_handler(char * path){
         printf("There's already a file named %s , therefore the program won't overwrite\n",new_path);
         return (ALREADY_EXISTING_FOLDER);
     }
-    new_file = fopen(new_path,"w");
 
-    decompress(new_file,&f_info,lrb);
+    new_file = fopen(new_path,"w");
+    decompress(new_file,f_info,lrb);
 
     return (NO_ERRORS);
 }
@@ -172,7 +171,7 @@ int main(int argc , char ** argv){
     for(int i=1;i<argc;i++){
         resetCompressionInfo(&file_info);
 
-        int error_arrived = decompress_handler(argv[i]);
+        int error_arrived = decompress_handler(argv[i],&file_info);
         if(error_arrived) error = dc_error_handler(error_arrived,i);
 
         if(error) break;
