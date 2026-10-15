@@ -62,12 +62,11 @@ dcbuild/%.o: %.c
 clean:
 	rm -rf build
 	rm -f compressor
-
-rmd:
 	rm -rf dcbuild
 	rm -f decompressor
 
-rmt:
-	rm -f tests/*_sf.zip tests/*_hf.zip
+
 rmc:
-	rm -f tests/*_hf.txt
+	rm -f tests/*_sf.zip tests/*_hf.zip
+rmd:
+	rm -f tests/*_hf.txt tests/*_sf.txt
